@@ -342,8 +342,3 @@ POST _transform/kibana-transform-01/_start
 19. Import the following assets via Stack Management -> Saved Objects:
 - assets/export.ndjson
 - assets/8.11-dashboard.ndjson
-
-5. Import the following assets via Stack Management -> Saved Objects:
-
-    - audit-logging-main/export.ndjson
-    - /Users/camillecorti-georgiou/stackuam-onprem-1/stack-uam-main/assets/8.11-dashboard.ndjson
