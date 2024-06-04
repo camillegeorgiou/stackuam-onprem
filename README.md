@@ -324,6 +324,10 @@ POST /_security/api_key
 ***Starting up***
 
 17. Start filebeat as a service:
+    
+```
+sudo service filebeat start
+```
 
 18. Verify data is being ingested:
      
