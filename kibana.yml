@@ -1,0 +1,10 @@
+- module: kibana
+  log:
+    enabled: false
+    var.paths: 
+
+  audit:
+    enabled: true
+    var.paths:
+      - /Users/camillecorti-georgiou/stackuam-onprem/kibana-8.11.4/logs/audit.log
+

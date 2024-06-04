@@ -1,0 +1,31 @@
+filebeat.inputs:
+- type: filestream
+  id: my-filestream-id
+  enabled: false
+  paths:
+    - /var/log/*.log
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+output.elasticsearch:
+  hosts: ["scheme://host:port"]
+  username: "elastic"
+  password: "password"
+  index: elastic-logs-8
+
+setup.template.json.enabled: true
+setup.template.name: "elastic-logs-8"
+setup.template.pattern: "elastic-logs-8"
+setup.template.json.path: "filebeat/template.json"
+setup.template.json.name: "elastic-logs-8"
+setup.template.json.data_stream: true
+setup.template.overwrite: false
+
+setup.ilm.enabled: true
+setup.ilm.policy_name: elastic-logs
+setup.ilm.policy_file: "filebeat/ilm.json"
+setup.ilm.check_exists: true
+
+logging.level: info

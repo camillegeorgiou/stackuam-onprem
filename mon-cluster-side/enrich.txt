@@ -1,0 +1,21 @@
+PUT _enrich/policy/objectid-policy
+{
+  "match": {
+    "indices": ["kibana_objects*"],
+    "match_field": "kibana.saved_object.id",
+    "enrich_fields": [
+      "type",
+      "dashboard",
+      "namespaces",
+      "event-annotation-group",
+      "graph-workspace",
+      "index-pattern",
+      "lens",
+      "links",
+      "map",
+      "query",
+      "search",
+      "visualization",
+      "title"]        
+  }
+}

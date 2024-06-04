@@ -1,0 +1,49 @@
+PUT _ingest/pipeline/enrich-ids
+{
+  "processors": [
+    {
+      "enrich": {
+        "field": "kibana.saved_object.id",
+        "policy_name": "objectid-policy",
+        "target_field": "meta",
+        "override": false,
+        "ignore_missing": true,
+        "ignore_failure": true,
+        "description": "Add enrichment"
+      }
+    },
+    {
+      "script": {
+        "source": """
+if (ctx.event.action == 'saved_object_delete') {
+  ctx['Active'] = false;
+} else {
+  ctx['Active'] = true;
+}
+        """
+      }
+    },
+    {
+      "geoip": {
+        "field": "http.request.headers.x-forwarded-for",
+        "target_field": "geoip",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "script": {
+        "source": """
+ZonedDateTime date = ZonedDateTime.parse(ctx['@timestamp']);
+ctx.hour_of_day = date.getHour();
+ctx.day_of_week_num = date.getDayOfWeek().getValue();
+ctx.day_of_week = date.getDayOfWeek().toString();
+ctx.day_of_month = date.getDayOfMonth();
+ctx.month_num = date.getMonthValue();
+ctx.month = date.getMonth().toString();
+ctx.year = date.getYear().toString();
+"""
+      }
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+    "description": "Additional parsing of Elasticsearch audit logs. Last update 2024-03-07.",
+    "version": 7,
+    "processors": [
+        {
+            "drop": {
+                "if": "ctx?.url?.original == \"/_security/user/_has_privileges\" || ctx?.url?.original == \"/_security/_authenticate\"",
+                "ignore_failure": true
+            }
+        },
+        {
+            "dissect": {
+                "field": "elasticsearch.audit.opaque_id",
+                "pattern": "%{elasticsearch.uam.search.id};%{elasticsearch.uam.origination}:%{}:%{elasticsearch.uam.application}:%{elasticsearch.uam.saved_object.id}",
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        },
+        {
+            "set": {
+                "field": "elasticsearch.uam.opaque_id",
+                "value": "{{elasticsearch.audit.opaque_id}}",
+                "ignore_failure": true
+            }
+        },
+        {
+            "dissect": {
+                "field": "url.original",
+                "pattern": "/%{elasticsearch.uam.search.index}/%{}",
+                "ignore_missing": true,
+                "ignore_failure": true,
+                "if": "ctx?.elasticsearch?.uam?.application != '' && ctx?.elasticsearch?.uam?.application != null"
+            }
+        },
+        {
+            "remove": {
+                "field": "elasticsearch.uam.search.index",
+                "if": "ctx?.elasticsearch?.uam?.search?.index != null && ctx?.elasticsearch?.uam?.search?.index != '' && (ctx?.elasticsearch?.uam?.search?.index).indexOf('_') == 0",
+                "ignore_missing": true,
+                "ignore_failure": true
+            }
+        },
+        {
+            "json": {
+                "field": "http.request.body.content",
+                "target_field": "temp",
+                "ignore_failure": true
+            }
+        },
+        {
+            "convert": {
+                "field": "temp.query",
+                "type": "string",
+                "ignore_failure": true,
+                "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+                "if": "ctx?.temp?.query != null",
+                "field": "temp.query",
+                "target_field": "elasticsearch.uam.search.query",
+                "ignore_failure": true,
+                "ignore_missing": true
+            }
+        },
+        {
+            "convert": {
+              "field": "temp.aggs",
+              "type": "string",
+              "ignore_missing": true,
+              "if": "ctx?.temp?.aggs != null",
+              "ignore_failure": true
+            }
+        },
+        {
+            "convert": {
+              "field": "temp.aggregations",
+              "type": "string",
+              "ignore_missing": true,
+              "if": "ctx?.temp?.aggregations != null",
+              "ignore_failure": true
+            }
+        },
+        {
+            "rename": {
+              "if": "ctx?.temp?.aggs != null",
+              "field": "temp.aggs",
+              "target_field": "elasticsearch.uam.search.aggregations",
+              "ignore_failure": true,
+              "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+              "field": "temp.aggregations",
+              "target_field": "elasticsearch.uam.search.aggregations",
+              "ignore_missing": true,
+              "if": "ctx?.temp?.aggregations != null",
+              "ignore_failure": true
+            }
+        },
+        {
+            "remove": {
+                "field": "temp",
+                "ignore_failure": true,
+                "ignore_missing": true
+            }
+        },
+        {
+            "grok": {
+                "field": "elasticsearch.uam.search.query",
+                "patterns": [
+                    "%{GREEDYDATA}, gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+                    "%{GREEDYDATA}, gte=%{NUMBER:elasticsearch.uam.search.date_range.from}, lte=%{NUMBER:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+                    "%{GREEDYDATA}gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+                    "%{GREEDYDATA}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}, gt=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}%{GREEDYDATA}"
+                ],
+                "ignore_missing": true,
+                "if": "ctx?.elasticsearch?.uam?.search?.query != '' && ctx?.elasticsearch?.uam?.search?.query != null",
+                "ignore_failure": true
+            }
+        },
+        {
+            "date": {
+                "field": "elasticsearch.uam.search.date_range.from",
+                "formats": [
+                    "ISO8601",
+                    "UNIX_MS"
+                ],
+                "target_field": "elasticsearch.uam.search.date_range.from",
+                "ignore_failure": true
+            }
+        },
+        {
+            "date": {
+                "field": "elasticsearch.uam.search.date_range.to",
+                "formats": [
+                    "ISO8601",
+                    "UNIX_MS"
+                ],
+                "target_field": "elasticsearch.uam.search.date_range.to",
+                "ignore_failure": true
+            }
+        },
+        {
+            "script": {
+                "source": "ctx.elasticsearch.uam.search.date_range.duration = ChronoUnit.DAYS.between((ZonedDateTime.parse(ctx.elasticsearch.uam.search.date_range.from)), (ZonedDateTime.parse(ctx.elasticsearch.uam.search.date_range.to)))",
+                "if": "ctx?.elasticsearch?.uam?.search?.date_range?.from != '' && ctx?.elasticsearch?.uam?.search?.date_range?.from != null && ctx?.elasticsearch?.uam?.search?.date_range?.to != '' && ctx?.elasticsearch?.uam?.search?.date_range?.to != null",
+                "ignore_failure": true
+            }
+        },
+        {
+            "urldecode": {
+                "ignore_failure": true,
+                "field": "elasticsearch.uam.search.index",
+                "ignore_missing": true
+            }
+        },
+        {
+            "split": {
+                "ignore_failure": true,
+                "field": "elasticsearch.uam.search.index",
+                "separator": ",",
+                "ignore_missing": true
+            }
+        }
+    ],
+    "on_failure": [
+		{
+		  "set": {
+			"description": "Record error information",
+			"field": "elasticsearch.uam.error",
+			"value": "Processor {{ _ingest.on_failure_processor_type }} with tag {{ _ingest.on_failure_processor_tag }} in pipeline {{ _ingest.on_failure_pipeline }} failed with message {{ _ingest.on_failure_message }}"
+		  }
+		}
+	]
+}

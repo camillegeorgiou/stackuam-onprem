@@ -1,0 +1,24 @@
+- module: elasticsearch
+  server:
+    enabled: true
+    var.paths:
+      - /Users/camillecorti-georgiou/stackuam-onprem/elasticsearch-8.11.4/logs/elasticsearch_server.json
+  gc:
+    enabled: false
+
+  audit:
+    enabled: true
+    var.paths:
+      - /Users/camillecorti-georgiou/stackuam-onprem/elasticsearch-8.11.4/logs/elasticsearch_audit.json
+
+  slowlog:
+    enabled: true
+    var.paths:
+      - /Users/camillecorti-georgiou/stackuam-onprem/elasticsearch-8.11.4/logs/elasticsearch_index_search_slowlog.json
+      - /Users/camillecorti-georgiou/stackuam-onprem/elasticsearch-8.11.4/logs/elasticsearch_index_indexing_slowlog.json
+
+  deprecation:
+    enabled: false
+    # Set custom paths for the log files. If left empty,
+    # Filebeat will choose the paths depending on your OS.
+    #var.paths:

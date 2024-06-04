@@ -1,0 +1,309 @@
+{
+  "description": "Additional parsing of Elasticsearch slowlogs. Last update 2023-03-06.",
+  "version": 10,
+  "processors": [
+    {
+      "dot_expander": {
+        "override": true,
+        "path": "elasticsearch.slowlog",
+        "field": "*"
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.search_type",
+        "target_field": "elasticsearch.slowlog.search_type",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.took",
+        "target_field": "elasticsearch.slowlog.took",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.message",
+        "target_field": "elasticsearch.slowlog.message",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.stats",
+        "target_field": "elasticsearch.slowlog.stats",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.source",
+        "target_field": "elasticsearch.slowlog.source",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.id",
+        "target_field": "elasticsearch.slowlog.id",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.total_shards",
+        "target_field": "elasticsearch.slowlog.total_shards",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.took_millis",
+        "target_field": "elasticsearch.slowlog.duration",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.total_hits",
+        "target_field": "elasticsearch.slowlog.total_hits",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.types",
+        "target_field": "elasticsearch.slowlog.doc_type",
+        "ignore_missing": true
+      }
+    },
+    {
+      "grok": {
+        "field": "elasticsearch.slowlog.message",
+        "pattern_definitions": {
+          "GREEDYMULTILINE": "(.|\n)*",
+          "INDEXNAME": "[a-zA-Z0-9_.-]*"
+        },
+        "patterns": [
+          "(\\[%{INDEXNAME:elasticsearch.index.name}\\]\\[%{NUMBER:elasticsearch.shard.id}\\])?(%{SPACE})(\\[%{INDEXNAME:elasticsearch.index.name}\\/%{DATA:elasticsearch.index.id}\\])?(%{SPACE})%{SPACE}(took\\[%{DATA:elasticsearch.slowlog.took}\\],)?%{SPACE}(took_millis\\[%{NUMBER:elasticsearch.slowlog.duration:long}\\],)?%{SPACE}(type\\[%{DATA:elasticsearch.slowlog.type}\\],)?%{SPACE}(id\\[%{DATA:elasticsearch.slowlog.id}\\],)?%{SPACE}(routing\\[%{DATA:elasticsearch.slowlog.routing}\\],)?%{SPACE}(total_hits\\[%{NUMBER:elasticsearch.slowlog.total_hits:int}\\],)?%{SPACE}(types\\[%{DATA:elasticsearch.slowlog.types}\\],)?%{SPACE}(stats\\[%{DATA:elasticsearch.slowlog.stats}\\],)?%{SPACE}(search_type\\[%{DATA:elasticsearch.slowlog.search_type}\\],)?%{SPACE}(total_shards\\[%{NUMBER:elasticsearch.slowlog.total_shards:int}\\],)?%{SPACE}(source\\[%{GREEDYMULTILINE:elasticsearch.slowlog.source_query}\\])?,?%{SPACE}(extra_source\\[%{DATA:elasticsearch.slowlog.extra_source}\\])?,?",
+          "\\[%{INDEXNAME:elasticsearch.index.name}\\]\\[%{NUMBER:elasticsearch.shard.id}\\]"
+        ]
+      }
+    },
+    {
+      "dissect": {
+        "field": "elasticsearch.slowlog.id",
+        "pattern": "%{elasticsearch.uam.search.id};%{elasticsearch.uam.origination}:%{}:%{elasticsearch.uam.application}:%{elasticsearch.uam.saved_object.id}",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "dissect": {
+        "field": "elasticsearch.slowlog.message",
+        "pattern": "[%{elasticsearch.uam.search.index}]%{}",
+        "ignore_failure": true,
+        "ignore_missing": true,
+        "if": "ctx?.elasticsearch?.slowlog?.message != '' && ctx?.elasticsearch?.slowlog?.message != null"
+      }
+    },
+    {
+      "remove": {
+        "field": "elasticsearch.slowlog.message",
+        "if": "ctx?.elasticsearch?.slowlog?.message != '' && ctx?.elasticsearch?.slowlog?.message != null",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "date": {
+        "target_field": "@timestamp",
+        "formats": [
+          "ISO8601"
+        ],
+        "field": "@timestamp",
+        "ignore_failure": true
+      }
+    },
+    {
+      "gsub": {
+        "field": "elasticsearch.slowlog.source",
+        "pattern": "\\\\",
+        "replacement": ""
+      }
+    },
+    {
+      "json": {
+        "field": "elasticsearch.slowlog.source",
+        "target_field": "temp",
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "temp.query",
+        "type": "string",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "if": "ctx?.temp?.query != null",
+        "field": "temp.query",
+        "target_field": "elasticsearch.uam.search.query",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "convert": {
+        "field": "temp.aggs",
+        "type": "string",
+        "ignore_missing": true,
+        "if": "ctx?.temp?.aggs != null",
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "temp.aggregations",
+        "type": "string",
+        "ignore_missing": true,
+        "if": "ctx?.temp?.aggregations != null",
+        "ignore_failure": true
+      }
+    },
+    {
+      "rename": {
+        "if": "ctx?.temp?.aggs != null",
+        "field": "temp.aggs",
+        "target_field": "elasticsearch.uam.search.aggregations",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "temp.aggregations",
+        "target_field": "elasticsearch.uam.search.aggregations",
+        "ignore_missing": true,
+        "if": "ctx?.temp?.aggregations != null",
+        "ignore_failure": true
+      }
+    },
+    {
+      "remove": {
+        "field": "temp",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "grok": {
+        "field": "elasticsearch.uam.search.query",
+        "patterns": [
+          "%{GREEDYDATA}, gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+          "%{GREEDYDATA}, gte=%{NUMBER:elasticsearch.uam.search.date_range.from}, lte=%{NUMBER:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+          "%{GREEDYDATA}gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+          "%{GREEDYDATA}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}, gt=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}%{GREEDYDATA}",
+          "%{GREEDYDATA}, gte=%{NUMBER:elasticsearch.uam.search.date_range.from},%{GREEDYDATA}, lte=%{NUMBER:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}"
+        ],
+        "ignore_missing": true,
+        "if": "ctx?.elasticsearch?.uam?.search?.query != '' && ctx?.elasticsearch?.uam?.search?.query != null",
+        "ignore_failure": true
+      }
+    },
+    {
+      "date": {
+        "field": "elasticsearch.uam.search.date_range.from",
+        "formats": [
+          "ISO8601",
+          "UNIX_MS"
+        ],
+        "target_field": "elasticsearch.uam.search.date_range.from",
+        "ignore_failure": true
+      }
+    },
+    {
+      "date": {
+        "field": "elasticsearch.uam.search.date_range.to",
+        "formats": [
+          "ISO8601",
+          "UNIX_MS"
+        ],
+        "target_field": "elasticsearch.uam.search.date_range.to",
+        "ignore_failure": true
+      }
+    },
+    {
+      "script": {
+        "source": "ctx.elasticsearch.uam.search.date_range.duration = ChronoUnit.DAYS.between((ZonedDateTime.parse(ctx.elasticsearch.uam.search.date_range.from)), (ZonedDateTime.parse(ctx.elasticsearch.uam.search.date_range.to)))",
+        "if": "ctx?.elasticsearch?.uam?.search?.date_range?.from != '' && ctx?.elasticsearch?.uam?.search?.date_range?.from != null && ctx?.elasticsearch?.uam?.search?.date_range?.to != '' && ctx?.elasticsearch?.uam?.search?.date_range?.to != null",
+        "ignore_failure": true
+      }
+    },
+    {
+      "urldecode": {
+        "ignore_failure": true,
+        "field": "elasticsearch.uam.search.index",
+        "ignore_missing": true
+      }
+    },
+    {
+      "split": {
+        "ignore_failure": true,
+        "field": "elasticsearch.uam.search.index",
+        "separator": ",",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.duration",
+        "target_field": "elasticsearch.uam.search.duration",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "convert": {
+        "field": "elasticsearch.uam.search.duration",
+        "type": "double"
+      }
+    },
+    {
+      "set": {
+        "field": "elasticsearch.uam.search.hits",
+        "value": 0
+      }
+    },
+    {
+      "grok": {
+        "if": "ctx?.elasticsearch?.slowlog?.total_hits != '0+ hits'",
+        "field": "elasticsearch.slowlog.total_hits",
+        "patterns": [
+          "%{NUMBER:elasticsearch.uam.search.hits:double} hits"
+        ],
+        "ignore_failure": true
+      }
+    },
+    {
+      "set": {
+        "field": "elasticsearch.uam.opaque_id",
+        "value": "{{ elasticsearch.slowlog.id }}"
+      }
+    }
+  ],
+  "on_failure": [
+    {
+      "set": {
+        "description": "Record error information",
+        "field": "elasticsearch.uam.error",
+        "value": "Processor {{ _ingest.on_failure_processor_type }} with tag {{ _ingest.on_failure_processor_tag }} in pipeline {{ _ingest.on_failure_pipeline }} failed with message {{ _ingest.on_failure_message }}"
+      }
+    }
+  ]
+}
