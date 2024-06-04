@@ -119,6 +119,7 @@ In the Dev Tools console of the cluster, run the following command to insert add
 4. Add an advanced watch using the watcher.txt file. This watcher checks for new documents in the kibana_analytics system index and reindexes into the new kibana index if the condition is met.
 
   -> You'll need to first create an API Key for authorization of the request via Stack Management-> Security API Keys or in Dev Tools Console:
+  
   ```
 POST /_security/api_key
 {
@@ -135,7 +136,8 @@ POST /_security/api_key
       ]
     }
   }
-}  ```
+}
+```
 
 - Edit the Watcher before creating it and add in the Elasticsearch (.es.) host name and API Key. Note: When adding in the API key the line should start: "Authorization": "ApiKey xxxxxx" followed by a space and then the actual key value
 
