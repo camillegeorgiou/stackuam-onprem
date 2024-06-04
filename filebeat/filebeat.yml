@@ -14,6 +14,9 @@ output.elasticsearch:
   username: "elastic"
   password: "password"
   index: elastic-logs-8
+  ssl.certificate_authorities: ["/path-to-certs/elasticsearch-cert.crt"]
+  ssl.keystore: ["/path-to-certs/http.p12"]
+
 
 setup.template.json.enabled: true
 setup.template.name: "elastic-logs-8"
