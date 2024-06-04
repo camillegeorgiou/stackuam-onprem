@@ -161,7 +161,7 @@ POST /_security/api_key
 filebeat modules enable kibana
 filebeat modules enable elasticsearch
 ```
-* For nonlinux see: Filebeat quick start: installation and configuration 
+* For nonlinux see: [Filebeat quick start: installation and configuration](https://www.elastic.co/guide/en/beats/filebeat/8.11/filebeat-installation-configuration.html)
 
 8. Modify filebeat-path-to/modules.d/elasticsearch.yml to read the Elastic auditing log files:
 
@@ -191,7 +191,7 @@ filebeat modules enable elasticsearch
 
 10. Modify filebeat.yml to ship data to the monitoring cluster: filebeat/filebeat.yml
 
-Filebeat must use certs trusted by the Monitoring cluster instance. The configuration file provides an example. Alternative methods of auth / trust can be employed. See: Configure the Elasticsearch output | Filebeat Reference [8.13] | Elastic. 
+Filebeat must use certs trusted by the Monitoring cluster instance. The configuration file provides an example. Alternative methods of auth / trust can be employed. See: [Configure the Elasticsearch output | Filebeat Reference [8.13] | Elastic.](https://www.elastic.co/guide/en/beats/filebeat/8.11/elasticsearch-output.html)
 
 Note the output will set up an index template and ILM policy conforming to the elastic-logs-8 pattern. This is so we have control over pipelines / mappings without modiying default filebeat templates.
 
@@ -205,7 +205,8 @@ filebeat test output
 ***Monitoring Deployment***
 - The files needed for this section are contained in mon-cluster-side folder in this repo.
 
-The Monitoring Cluster should be set up to trust the Main Cluster. This needs to be done at the config level. For more information, see: ​​Add remote clusters using TLS certificate authentication | Elasticsearch Guide [8.11] | Elastic
+The Monitoring Cluster should be set up to trust the Main Cluster. This needs to be done at the config level. For more information, see: ​​[Add remote clusters using TLS certificate authentication | Elasticsearch Guide [8.11] | Elastic
+](https://www.elastic.co/guide/en/elasticsearch/reference/current/remote-clusters-cert.html)
 
 As per the Main Cluster, security settings should also include xpack.http.ssl* values to accommodate the watcher webhook action.
 
