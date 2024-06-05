@@ -16,19 +16,9 @@ output.elasticsearch:
   index: elastic-logs-8
   ssl.certificate_authorities: ["/path-to-certs/elasticsearch-cert.crt"]
   ssl.keystore: ["/path-to-certs/http.p12"]
-
-
-setup.template.json.enabled: true
+  
 setup.template.name: "elastic-logs-8"
-setup.template.pattern: "elastic-logs-8"
-setup.template.json.path: "filebeat/template.json"
-setup.template.json.name: "elastic-logs-8"
-setup.template.json.data_stream: true
-setup.template.overwrite: false
-
-setup.ilm.enabled: true
-setup.ilm.policy_name: elastic-logs
-setup.ilm.policy_file: "filebeat/ilm.json"
-setup.ilm.check_exists: true
+setup.template.pattern: "elastic-logs-8*"
+setup.ilm.enabled: false
 
 logging.level: info
