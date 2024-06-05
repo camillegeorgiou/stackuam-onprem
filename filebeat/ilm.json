@@ -21,4 +21,4 @@ PUT _ilm/policy/elastic-logs
       }
     }
   }
-}v
+}
