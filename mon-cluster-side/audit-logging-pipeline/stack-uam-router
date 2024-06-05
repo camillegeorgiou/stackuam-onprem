@@ -3,16 +3,17 @@
     "version": 1,
     "processors": [
         {
-            "pipeline": {
-                "name": "stack-uam-audit-extra",
-                "if": "ctx?.event?.dataset == 'elasticsearch.audit'"
-            }
+          "pipeline": {
+            "name": "stack-uam-audit-extra",
+            "if": "ctx?.event?.dataset == 'elasticsearch.audit'"
+          }
         },
         {
-            "pipeline": {
-                "name": "stack-uam-slowlog-extra",
-                "if": "ctx?.event?.dataset == 'elasticsearch.slowlog'"
-            }
+          "pipeline": {
+            "name": "stack-uam-slowlog-extra",
+            "if": "ctx['event.dataset'] == 'elasticsearch.slowlog' || ctx['event.dataset'] == 'elasticsearch.index_search_slowlog'",
+            "ignore_failure": true
+          }
         }
-    ]
+      ]
 }
