@@ -171,10 +171,13 @@ filebeat modules enable elasticsearch
 
 Filebeat must use certs trusted by the Monitoring cluster instance. The configuration file provides an example. Alternative methods of auth / trust can be employed. See: [Configure the Elasticsearch output | Filebeat Reference [8.13] | Elastic.](https://www.elastic.co/guide/en/beats/filebeat/8.11/elasticsearch-output.html)
 
-- Load the ILM policy and templates into the Main Cluster:
-   a) filebeat/ilm.json<br>
-   b) filebeat/component_template.txt<br>
-   c) filebeat/template.json<br>
+Load the ILM policy and templates into the Main Cluster:
+
+   a) filebeat/ilm.json
+   
+   b) filebeat/component_template.txt
+   
+   c) filebeat/template.json
 
 The config is designed to set-up a datastream conforming the elastic-logs-8 pattern, ensuring segregation of filebeat data, where other sources exist.
 
