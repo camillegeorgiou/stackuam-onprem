@@ -1,48 +1,120 @@
 {
-  "version": 7,
-  "description": "Additional parsing of Elasticsearch audit logs. Last update 2024-03-07.",
+  "description": "Pipeline for parsing the Elasticsearch slow logs in JSON format.",
   "processors": [
     {
-      "drop": {
-        "if": "ctx?.url?.original == \"/_security/user/_has_privileges\" || ctx?.url?.original == \"/_security/_authenticate\"",
-        "ignore_failure": true
+      "dot_expander": {
+        "field": "*",
+        "override": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.search_type",
+        "target_field": "elasticsearch.slowlog.search_type",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.took",
+        "target_field": "elasticsearch.slowlog.took",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.message",
+        "target_field": "elasticsearch.slowlog.message",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.stats",
+        "target_field": "elasticsearch.slowlog.stats",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.source",
+        "target_field": "elasticsearch.slowlog.source",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.id",
+        "target_field": "elasticsearch.slowlog.id",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.total_shards",
+        "target_field": "elasticsearch.slowlog.total_shards",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.elasticsearch.slowlog.total_hits",
+        "target_field": "elasticsearch.slowlog.total_hits",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.types",
+        "target_field": "elasticsearch.slowlog.doc_type",
+        "ignore_missing": true
       }
     },
     {
       "dissect": {
-        "field": "elasticsearch.audit.opaque_id",
+        "field": "elasticsearch.slowlog.id",
         "pattern": "%{elasticsearch.uam.search.id};%{elasticsearch.uam.origination}:%{}:%{elasticsearch.uam.application}:%{elasticsearch.uam.saved_object.id}",
         "ignore_missing": true,
         "ignore_failure": true
       }
     },
     {
-      "set": {
-        "field": "elasticsearch.uam.opaque_id",
-        "value": "{{elasticsearch.audit.opaque_id}}",
-        "ignore_failure": true
-      }
-    },
-    {
       "dissect": {
-        "field": "url.original",
-        "pattern": "/%{elasticsearch.uam.search.index}/%{}",
-        "ignore_missing": true,
+        "field": "elasticsearch.slowlog.message",
+        "pattern": "[%{elasticsearch.uam.search.index}]%{}",
         "ignore_failure": true,
-        "if": "ctx?.elasticsearch?.uam?.application != '' && ctx?.elasticsearch?.uam?.application != null"
+        "ignore_missing": true,
+        "if": "ctx?.elasticsearch?.slowlog?.message != '' && ctx?.elasticsearch?.slowlog?.message != null"
       }
     },
     {
       "remove": {
-        "field": "elasticsearch.uam.search.index",
-        "if": "ctx?.elasticsearch?.uam?.search?.index != null && ctx?.elasticsearch?.uam?.search?.index != '' && (ctx?.elasticsearch?.uam?.search?.index).indexOf('_') == 0",
-        "ignore_missing": true,
+        "field": "elasticsearch.slowlog.message",
+        "if": "ctx?.elasticsearch?.slowlog?.message != '' && ctx?.elasticsearch?.slowlog?.message != null",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "date": {
+        "target_field": "@timestamp",
+        "formats": [
+          "ISO8601"
+        ],
+        "field": "@timestamp",
         "ignore_failure": true
       }
     },
     {
+      "gsub": {
+        "field": "elasticsearch.slowlog.source",
+        "pattern": "\\\\",
+        "replacement": ""
+      }
+    },
+    {
       "json": {
-        "field": "http.request.body.content",
+        "field": "elasticsearch.slowlog.source",
         "target_field": "temp",
         "ignore_failure": true
       }
@@ -114,7 +186,9 @@
           "%{GREEDYDATA}, gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
           "%{GREEDYDATA}, gte=%{NUMBER:elasticsearch.uam.search.date_range.from}, lte=%{NUMBER:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
           "%{GREEDYDATA}gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
-          "%{GREEDYDATA}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}, gt=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}%{GREEDYDATA}"
+          "%{GREEDYDATA}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}, gt=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}%{GREEDYDATA}",
+          "%{GREEDYDATA}, gte=%{NUMBER:elasticsearch.uam.search.date_range.from},%{GREEDYDATA}, lte=%{NUMBER:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}",
+          "%{GREEDYDATA}, gte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.from}, %{GREEDYDATA}, lte=%{TIMESTAMP_ISO8601:elasticsearch.uam.search.date_range.to}%{GREEDYDATA}"
         ],
         "ignore_missing": true,
         "if": "ctx?.elasticsearch?.uam?.search?.query != '' && ctx?.elasticsearch?.uam?.search?.query != null",
@@ -162,6 +236,51 @@
         "ignore_failure": true,
         "field": "elasticsearch.uam.search.index",
         "separator": ",",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "elasticsearch.slowlog.duration",
+        "target_field": "elasticsearch.uam.search.duration",
+        "ignore_failure": true,
+        "ignore_missing": true
+      }
+    },
+    {
+      "set": {
+        "field": "elasticsearch.uam.search.hits",
+        "value": 0
+      }
+    },
+    {
+      "grok": {
+        "if": "ctx?.elasticsearch?.slowlog?.total_hits != '0+ hits'",
+        "field": "elasticsearch.slowlog.total_hits",
+        "patterns": [
+          "%{NUMBER:elasticsearch.uam.search.hits:double} hits"
+        ],
+        "ignore_failure": true
+      }
+    },
+    {
+      "set": {
+        "field": "elasticsearch.uam.search.duration",
+        "value": "{{ elasticsearch.slowlog.took_millis }}",
+        "ignore_empty_value": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "set": {
+        "field": "elasticsearch.uam.opaque_id",
+        "value": "{{ elasticsearch.slowlog.id }}"
+      }
+    },
+    {
+      "convert": {
+        "field": "elasticsearch.uam.duration",
+        "type": "long",
         "ignore_missing": true
       }
     }
