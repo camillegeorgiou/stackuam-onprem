@@ -390,6 +390,7 @@ PUT _index_template/elastic-logs-8
             "elasticsearch.gc.tags",
             "elasticsearch.slowlog.logger",
             "elasticsearch.slowlog.took",
+            "elastic.slowlog.took_millis",
             "elasticsearch.slowlog.types",
             "elasticsearch.slowlog.stats",
             "elasticsearch.slowlog.search_type",
@@ -524,10 +525,13 @@ PUT _index_template/elastic-logs-8
           }
         }
       ],
+      "date_detection": false,
       "properties": {
         "container": {
+          "type": "object",
           "properties": {
             "image": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -557,6 +561,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "agent": {
+          "type": "object",
           "properties": {
             "hostname": {
               "ignore_above": 1024,
@@ -570,11 +575,11 @@ PUT _index_template/elastic-logs-8
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "type": {
+            "ephemeral_id": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "ephemeral_id": {
+            "type": {
               "ignore_above": 1024,
               "type": "keyword"
             },
@@ -585,8 +590,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "source": {
+          "type": "object",
           "properties": {
             "nat": {
+              "type": "object",
               "properties": {
                 "port": {
                   "type": "long"
@@ -615,12 +622,13 @@ PUT _index_template/elastic-logs-8
               "type": "long"
             },
             "geo": {
+              "type": "object",
               "properties": {
-                "region_iso_code": {
+                "continent_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "continent_name": {
+                "region_iso_code": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -650,21 +658,23 @@ PUT _index_template/elastic-logs-8
               }
             },
             "as": {
+              "type": "object",
               "properties": {
                 "number": {
                   "type": "long"
                 },
                 "organization": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
+                      "type": "keyword",
                       "fields": {
                         "text": {
                           "norms": false,
                           "type": "text"
                         }
-                      },
-                      "type": "keyword"
+                      }
                     }
                   }
                 }
@@ -685,16 +695,17 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "user": {
+              "type": "object",
               "properties": {
                 "full_name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "domain": {
                   "ignore_above": 1024,
@@ -723,6 +734,7 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 },
                 "group": {
+                  "type": "object",
                   "properties": {
                     "domain": {
                       "ignore_above": 1024,
@@ -743,6 +755,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "icmp": {
+          "type": "object",
           "properties": {
             "code": {
               "ignore_above": 1024,
@@ -755,12 +768,14 @@ PUT _index_template/elastic-logs-8
           }
         },
         "cloud": {
+          "type": "object",
           "properties": {
             "availability_zone": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "image": {
+              "type": "object",
               "properties": {
                 "id": {
                   "ignore_above": 1024,
@@ -769,6 +784,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "instance": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -785,6 +801,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "machine": {
+              "type": "object",
               "properties": {
                 "type": {
                   "ignore_above": 1024,
@@ -793,6 +810,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "project": {
+              "type": "object",
               "properties": {
                 "id": {
                   "ignore_above": 1024,
@@ -805,6 +823,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "account": {
+              "type": "object",
               "properties": {
                 "id": {
                   "ignore_above": 1024,
@@ -815,12 +834,14 @@ PUT _index_template/elastic-logs-8
           }
         },
         "observer": {
+          "type": "object",
           "properties": {
             "product": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "os": {
+              "type": "object",
               "properties": {
                 "kernel": {
                   "ignore_above": 1024,
@@ -828,13 +849,13 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "family": {
                   "ignore_above": 1024,
@@ -850,13 +871,13 @@ PUT _index_template/elastic-logs-8
                 },
                 "full": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 }
               }
             },
@@ -883,6 +904,7 @@ PUT _index_template/elastic-logs-8
               "type": "object",
               "properties": {
                 "vlan": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -899,6 +921,7 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 },
                 "interface": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -917,6 +940,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "geo": {
+              "type": "object",
               "properties": {
                 "continent_name": {
                   "ignore_above": 1024,
@@ -955,6 +979,7 @@ PUT _index_template/elastic-logs-8
               "type": "object",
               "properties": {
                 "vlan": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -971,6 +996,7 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 },
                 "interface": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -1002,15 +1028,8 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
-        "timeseries": {
-          "properties": {
-            "instance": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            }
-          }
-        },
         "code_signature": {
+          "type": "object",
           "properties": {
             "valid": {
               "type": "boolean"
@@ -1031,9 +1050,20 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
+        "ecs": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            }
+          }
+        },
         "elasticsearch": {
+          "type": "object",
           "properties": {
             "cluster": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -1045,47 +1075,8 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
-            "server": {
-              "properties": {
-                "stacktrace": {
-                  "ignore_above": 1024,
-                  "index": false,
-                  "type": "keyword"
-                },
-                "gc": {
-                  "properties": {
-                    "overhead_seq": {
-                      "type": "long"
-                    },
-                    "young": {
-                      "properties": {
-                        "one": {
-                          "type": "long"
-                        },
-                        "two": {
-                          "type": "long"
-                        }
-                      }
-                    },
-                    "observation_duration": {
-                      "properties": {
-                        "ms": {
-                          "type": "float"
-                        }
-                      }
-                    },
-                    "collection_duration": {
-                      "properties": {
-                        "ms": {
-                          "type": "float"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
             "node": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -1097,13 +1088,60 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
+            "server": {
+              "type": "object",
+              "properties": {
+                "stacktrace": {
+                  "ignore_above": 1024,
+                  "index": false,
+                  "type": "keyword"
+                },
+                "gc": {
+                  "type": "object",
+                  "properties": {
+                    "overhead_seq": {
+                      "type": "long"
+                    },
+                    "young": {
+                      "type": "object",
+                      "properties": {
+                        "one": {
+                          "type": "long"
+                        },
+                        "two": {
+                          "type": "long"
+                        }
+                      }
+                    },
+                    "observation_duration": {
+                      "type": "object",
+                      "properties": {
+                        "ms": {
+                          "type": "float"
+                        }
+                      }
+                    },
+                    "collection_duration": {
+                      "type": "object",
+                      "properties": {
+                        "ms": {
+                          "type": "float"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
             "component": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "audit": {
+              "type": "object",
               "properties": {
                 "request": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -1124,6 +1162,7 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 },
                 "origin": {
+                  "type": "object",
                   "properties": {
                     "type": {
                       "ignore_above": 1024,
@@ -1144,6 +1183,7 @@ PUT _index_template/elastic-logs-8
                   "type": "text"
                 },
                 "user": {
+                  "type": "object",
                   "properties": {
                     "roles": {
                       "ignore_above": 1024,
@@ -1155,33 +1195,38 @@ PUT _index_template/elastic-logs-8
                     }
                   }
                 },
+                "layer": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
                 "url": {
+                  "type": "object",
                   "properties": {
                     "params": {
                       "ignore_above": 1024,
                       "type": "keyword"
                     }
                   }
-                },
-                "layer": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
                 }
               }
             },
             "slowlog": {
+              "type": "object",
               "properties": {
-                "total_shards": {
+                "took": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "took": {
+                "total_shards": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
                 "types": {
                   "ignore_above": 1024,
                   "type": "keyword"
+                },
+                "took_millis": {
+                  "type": "long"
                 },
                 "logger": {
                   "ignore_above": 1024,
@@ -1198,6 +1243,9 @@ PUT _index_template/elastic-logs-8
                 "search_type": {
                   "ignore_above": 1024,
                   "type": "keyword"
+                },
+                "duration": {
+                  "type": "long"
                 },
                 "routing": {
                   "ignore_above": 1024,
@@ -1226,6 +1274,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "index": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -1238,6 +1287,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "shard": {
+              "type": "object",
               "properties": {
                 "id": {
                   "ignore_above": 1024,
@@ -1246,13 +1296,16 @@ PUT _index_template/elastic-logs-8
               }
             },
             "deprecation": {
-              "properties": {}
+              "type": "object"
             },
             "gc": {
+              "type": "object",
               "properties": {
                 "phase": {
+                  "type": "object",
                   "properties": {
                     "cpu_time": {
+                      "type": "object",
                       "properties": {
                         "real_sec": {
                           "type": "float"
@@ -1271,12 +1324,12 @@ PUT _index_template/elastic-logs-8
                     "scrub_string_table_time_sec": {
                       "type": "float"
                     },
-                    "weak_refs_processing_time_sec": {
-                      "type": "float"
-                    },
                     "name": {
                       "ignore_above": 1024,
                       "type": "keyword"
+                    },
+                    "weak_refs_processing_time_sec": {
+                      "type": "float"
                     },
                     "parallel_rescan_time_sec": {
                       "type": "float"
@@ -1296,6 +1349,7 @@ PUT _index_template/elastic-logs-8
                   "type": "float"
                 },
                 "old_gen": {
+                  "type": "object",
                   "properties": {
                     "size_kb": {
                       "type": "long"
@@ -1306,6 +1360,7 @@ PUT _index_template/elastic-logs-8
                   }
                 },
                 "young_gen": {
+                  "type": "object",
                   "properties": {
                     "size_kb": {
                       "type": "long"
@@ -1319,6 +1374,7 @@ PUT _index_template/elastic-logs-8
                   "type": "float"
                 },
                 "heap": {
+                  "type": "object",
                   "properties": {
                     "size_kb": {
                       "type": "long"
@@ -1336,17 +1392,20 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
-        "ecs": {
+        "timeseries": {
+          "type": "object",
           "properties": {
-            "version": {
+            "instance": {
               "ignore_above": 1024,
               "type": "keyword"
             }
           }
         },
         "host": {
+          "type": "object",
           "properties": {
             "os": {
+              "type": "object",
               "properties": {
                 "build": {
                   "ignore_above": 1024,
@@ -1362,13 +1421,13 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "family": {
                   "ignore_above": 1024,
@@ -1409,12 +1468,13 @@ PUT _index_template/elastic-logs-8
               "type": "long"
             },
             "geo": {
+              "type": "object",
               "properties": {
-                "region_iso_code": {
+                "continent_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "continent_name": {
+                "region_iso_code": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -1426,20 +1486,20 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "name": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
-                },
                 "country_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "region_name": {
+                "name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
                 "location": {
                   "type": "geo_point"
+                },
+                "region_name": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
                 }
               }
             },
@@ -1463,6 +1523,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "user": {
+              "type": "object",
               "properties": {
                 "full_name": {
                   "ignore_above": 1024,
@@ -1492,15 +1553,16 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "hash": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
-                },
                 "email": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
+                "hash": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
                 "group": {
+                  "type": "object",
                   "properties": {
                     "domain": {
                       "ignore_above": 1024,
@@ -1525,8 +1587,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "kibana": {
+          "type": "object",
           "properties": {
             "log": {
+              "type": "object",
               "properties": {
                 "meta": {
                   "type": "object"
@@ -1544,6 +1608,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "azure": {
+          "type": "object",
           "properties": {
             "sequence_number": {
               "type": "long"
@@ -1568,6 +1633,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "group": {
+          "type": "object",
           "properties": {
             "domain": {
               "ignore_above": 1024,
@@ -1584,8 +1650,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "tracing": {
+          "type": "object",
           "properties": {
             "trace": {
+              "type": "object",
               "properties": {
                 "id": {
                   "ignore_above": 1024,
@@ -1594,6 +1662,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "transaction": {
+              "type": "object",
               "properties": {
                 "id": {
                   "ignore_above": 1024,
@@ -1604,6 +1673,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "package": {
+          "type": "object",
           "properties": {
             "installed": {
               "type": "date"
@@ -1643,11 +1713,11 @@ PUT _index_template/elastic-logs-8
             "size": {
               "type": "long"
             },
-            "name": {
+            "checksum": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "checksum": {
+            "name": {
               "ignore_above": 1024,
               "type": "keyword"
             },
@@ -1658,19 +1728,21 @@ PUT _index_template/elastic-logs-8
           }
         },
         "dns": {
+          "type": "object",
           "properties": {
             "op_code": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            },
-            "response_code": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "resolved_ip": {
               "type": "ip"
             },
+            "response_code": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
             "question": {
+              "type": "object",
               "properties": {
                 "registered_domain": {
                   "ignore_above": 1024,
@@ -1737,6 +1809,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "vulnerability": {
+          "type": "object",
           "properties": {
             "reference": {
               "ignore_above": 1024,
@@ -1747,6 +1820,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "score": {
+              "type": "object",
               "properties": {
                 "environmental": {
                   "type": "float"
@@ -1768,6 +1842,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "scanner": {
+              "type": "object",
               "properties": {
                 "vendor": {
                   "ignore_above": 1024,
@@ -1777,13 +1852,13 @@ PUT _index_template/elastic-logs-8
             },
             "description": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "id": {
               "ignore_above": 1024,
@@ -1793,11 +1868,11 @@ PUT _index_template/elastic-logs-8
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "enumeration": {
+            "classification": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "classification": {
+            "enumeration": {
               "ignore_above": 1024,
               "type": "keyword"
             }
@@ -1811,6 +1886,7 @@ PUT _index_template/elastic-logs-8
           "type": "keyword"
         },
         "input": {
+          "type": "object",
           "properties": {
             "type": {
               "ignore_above": 1024,
@@ -1819,27 +1895,30 @@ PUT _index_template/elastic-logs-8
           }
         },
         "as": {
+          "type": "object",
           "properties": {
             "number": {
               "type": "long"
             },
             "organization": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 }
               }
             }
           }
         },
         "kafka": {
+          "type": "object",
           "properties": {
             "partition": {
               "type": "long"
@@ -1861,8 +1940,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "http": {
+          "type": "object",
           "properties": {
             "request": {
+              "type": "object",
               "properties": {
                 "referrer": {
                   "ignore_above": 1024,
@@ -1876,6 +1957,7 @@ PUT _index_template/elastic-logs-8
                   "type": "long"
                 },
                 "body": {
+                  "type": "object",
                   "properties": {
                     "bytes": {
                       "type": "long"
@@ -1895,6 +1977,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "response": {
+              "type": "object",
               "properties": {
                 "status_code": {
                   "type": "long"
@@ -1903,6 +1986,7 @@ PUT _index_template/elastic-logs-8
                   "type": "long"
                 },
                 "body": {
+                  "type": "object",
                   "properties": {
                     "bytes": {
                       "type": "long"
@@ -1931,6 +2015,7 @@ PUT _index_template/elastic-logs-8
           "type": "object"
         },
         "hash": {
+          "type": "object",
           "properties": {
             "sha1": {
               "ignore_above": 1024,
@@ -1951,8 +2036,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "server": {
+          "type": "object",
           "properties": {
             "nat": {
+              "type": "object",
               "properties": {
                 "port": {
                   "type": "long"
@@ -1981,12 +2068,13 @@ PUT _index_template/elastic-logs-8
               "type": "long"
             },
             "geo": {
+              "type": "object",
               "properties": {
-                "region_iso_code": {
+                "continent_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "continent_name": {
+                "region_iso_code": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -2016,21 +2104,23 @@ PUT _index_template/elastic-logs-8
               }
             },
             "as": {
+              "type": "object",
               "properties": {
                 "number": {
                   "type": "long"
                 },
                 "organization": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
+                      "type": "keyword",
                       "fields": {
                         "text": {
                           "norms": false,
                           "type": "text"
                         }
-                      },
-                      "type": "keyword"
+                      }
                     }
                   }
                 }
@@ -2051,16 +2141,17 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "user": {
+              "type": "object",
               "properties": {
                 "full_name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "domain": {
                   "ignore_above": 1024,
@@ -2068,19 +2159,15 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "id": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
-                },
-                "hash": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -2088,7 +2175,12 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
+                "hash": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
                 "group": {
+                  "type": "object",
                   "properties": {
                     "domain": {
                       "ignore_above": 1024,
@@ -2109,8 +2201,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "log": {
+          "type": "object",
           "properties": {
             "file": {
+              "type": "object",
               "properties": {
                 "path": {
                   "ignore_above": 1024,
@@ -2134,8 +2228,10 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "origin": {
+              "type": "object",
               "properties": {
                 "file": {
+                  "type": "object",
                   "properties": {
                     "line": {
                       "type": "long"
@@ -2157,6 +2253,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "source": {
+              "type": "object",
               "properties": {
                 "address": {
                   "ignore_above": 1024,
@@ -2168,6 +2265,7 @@ PUT _index_template/elastic-logs-8
               "type": "object",
               "properties": {
                 "severity": {
+                  "type": "object",
                   "properties": {
                     "code": {
                       "type": "long"
@@ -2182,6 +2280,7 @@ PUT _index_template/elastic-logs-8
                   "type": "long"
                 },
                 "facility": {
+                  "type": "object",
                   "properties": {
                     "code": {
                       "type": "long"
@@ -2197,8 +2296,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "destination": {
+          "type": "object",
           "properties": {
             "nat": {
+              "type": "object",
               "properties": {
                 "port": {
                   "type": "long"
@@ -2227,12 +2328,13 @@ PUT _index_template/elastic-logs-8
               "type": "long"
             },
             "geo": {
+              "type": "object",
               "properties": {
-                "region_iso_code": {
+                "continent_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "continent_name": {
+                "region_iso_code": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -2252,31 +2354,33 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
+                "location": {
+                  "type": "geo_point"
+                },
                 "region_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
-                },
-                "location": {
-                  "type": "geo_point"
                 }
               }
             },
             "as": {
+              "type": "object",
               "properties": {
                 "number": {
                   "type": "long"
                 },
                 "organization": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
+                      "type": "keyword",
                       "fields": {
                         "text": {
                           "norms": false,
                           "type": "text"
                         }
-                      },
-                      "type": "keyword"
+                      }
                     }
                   }
                 }
@@ -2297,16 +2401,17 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "user": {
+              "type": "object",
               "properties": {
                 "full_name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "domain": {
                   "ignore_above": 1024,
@@ -2314,19 +2419,15 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "id": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
-                },
-                "hash": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -2334,7 +2435,12 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
+                "hash": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
                 "group": {
+                  "type": "object",
                   "properties": {
                     "domain": {
                       "ignore_above": 1024,
@@ -2355,6 +2461,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "rule": {
+          "type": "object",
           "properties": {
             "reference": {
               "ignore_above": 1024,
@@ -2388,17 +2495,18 @@ PUT _index_template/elastic-logs-8
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "version": {
+            "uuid": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "uuid": {
+            "version": {
               "ignore_above": 1024,
               "type": "keyword"
             }
           }
         },
         "syslog": {
+          "type": "object",
           "properties": {
             "priority": {
               "type": "long"
@@ -2417,6 +2525,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "error": {
+          "type": "object",
           "properties": {
             "code": {
               "ignore_above": 1024,
@@ -2447,6 +2556,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "interface": {
+          "type": "object",
           "properties": {
             "name": {
               "ignore_above": 1024,
@@ -2463,8 +2573,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "docker": {
+          "type": "object",
           "properties": {
             "container": {
+              "type": "object",
               "properties": {
                 "labels": {
                   "type": "object"
@@ -2477,6 +2589,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "network": {
+          "type": "object",
           "properties": {
             "transport": {
               "ignore_above": 1024,
@@ -2490,6 +2603,7 @@ PUT _index_template/elastic-logs-8
               "type": "object",
               "properties": {
                 "vlan": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -2506,10 +2620,6 @@ PUT _index_template/elastic-logs-8
             "packets": {
               "type": "long"
             },
-            "protocol": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            },
             "community_id": {
               "ignore_above": 1024,
               "type": "keyword"
@@ -2517,11 +2627,16 @@ PUT _index_template/elastic-logs-8
             "forwarded_ip": {
               "type": "ip"
             },
+            "protocol": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
             "application": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "vlan": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -2551,12 +2666,13 @@ PUT _index_template/elastic-logs-8
           }
         },
         "geo": {
+          "type": "object",
           "properties": {
-            "region_iso_code": {
+            "continent_name": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "continent_name": {
+            "region_iso_code": {
               "ignore_above": 1024,
               "type": "keyword"
             },
@@ -2586,6 +2702,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "file": {
+          "type": "object",
           "properties": {
             "owner": {
               "ignore_above": 1024,
@@ -2609,12 +2726,12 @@ PUT _index_template/elastic-logs-8
             "accessed": {
               "type": "date"
             },
+            "mtime": {
+              "type": "date"
+            },
             "type": {
               "ignore_above": 1024,
               "type": "keyword"
-            },
-            "mtime": {
-              "type": "date"
             },
             "directory": {
               "ignore_above": 1024,
@@ -2640,22 +2757,20 @@ PUT _index_template/elastic-logs-8
             },
             "path": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "uid": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "size": {
-              "type": "long"
-            },
             "code_signature": {
+              "type": "object",
               "properties": {
                 "valid": {
                   "type": "boolean"
@@ -2676,7 +2791,15 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
+            "size": {
+              "type": "long"
+            },
+            "mime_type": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
             "pe": {
+              "type": "object",
               "properties": {
                 "file_version": {
                   "ignore_above": 1024,
@@ -2700,10 +2823,6 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
-            "mime_type": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            },
             "name": {
               "ignore_above": 1024,
               "type": "keyword"
@@ -2720,6 +2839,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "hash": {
+              "type": "object",
               "properties": {
                 "sha1": {
                   "ignore_above": 1024,
@@ -2745,19 +2865,8 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
-        "vlan": {
-          "properties": {
-            "name": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            },
-            "id": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            }
-          }
-        },
         "related": {
+          "type": "object",
           "properties": {
             "ip": {
               "type": "ip"
@@ -2772,13 +2881,28 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
+        "vlan": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "id": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            }
+          }
+        },
         "stream": {
           "ignore_above": 1024,
           "type": "keyword"
         },
         "client": {
+          "type": "object",
           "properties": {
             "nat": {
+              "type": "object",
               "properties": {
                 "port": {
                   "type": "long"
@@ -2807,12 +2931,13 @@ PUT _index_template/elastic-logs-8
               "type": "long"
             },
             "geo": {
+              "type": "object",
               "properties": {
-                "region_iso_code": {
+                "continent_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "continent_name": {
+                "region_iso_code": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -2841,30 +2966,32 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
-            "registered_domain": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            },
             "as": {
+              "type": "object",
               "properties": {
                 "number": {
                   "type": "long"
                 },
                 "organization": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
+                      "type": "keyword",
                       "fields": {
                         "text": {
                           "norms": false,
                           "type": "text"
                         }
-                      },
-                      "type": "keyword"
+                      }
                     }
                   }
                 }
               }
+            },
+            "registered_domain": {
+              "ignore_above": 1024,
+              "type": "keyword"
             },
             "port": {
               "type": "long"
@@ -2877,16 +3004,17 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "user": {
+              "type": "object",
               "properties": {
                 "full_name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "domain": {
                   "ignore_above": 1024,
@@ -2894,13 +3022,13 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "id": {
                   "ignore_above": 1024,
@@ -2915,6 +3043,7 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 },
                 "group": {
+                  "type": "object",
                   "properties": {
                     "domain": {
                       "ignore_above": 1024,
@@ -2935,31 +3064,32 @@ PUT _index_template/elastic-logs-8
           }
         },
         "event": {
+          "type": "object",
           "properties": {
             "severity": {
               "type": "long"
             },
-            "original": {
+            "code": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "code": {
+            "original": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "risk_score": {
               "type": "float"
             },
-            "timezone": {
-              "ignore_above": 1024,
-              "type": "keyword"
+            "created": {
+              "type": "date"
             },
             "kind": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "created": {
-              "type": "date"
+            "timezone": {
+              "ignore_above": 1024,
+              "type": "keyword"
             },
             "module": {
               "ignore_above": 1024,
@@ -2976,12 +3106,12 @@ PUT _index_template/elastic-logs-8
               "ignore_above": 1024,
               "type": "keyword"
             },
+            "duration": {
+              "type": "long"
+            },
             "reference": {
               "ignore_above": 1024,
               "type": "keyword"
-            },
-            "duration": {
-              "type": "long"
             },
             "sequence": {
               "type": "long"
@@ -2989,12 +3119,12 @@ PUT _index_template/elastic-logs-8
             "ingested": {
               "type": "date"
             },
-            "risk_score_norm": {
-              "type": "float"
-            },
             "provider": {
               "ignore_above": 1024,
               "type": "keyword"
+            },
+            "risk_score_norm": {
+              "type": "float"
             },
             "action": {
               "ignore_above": 1024,
@@ -3026,18 +3156,20 @@ PUT _index_template/elastic-logs-8
           }
         },
         "user_agent": {
+          "type": "object",
           "properties": {
             "original": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "os": {
+              "type": "object",
               "properties": {
                 "full_name": {
                   "ignore_above": 1024,
@@ -3071,13 +3203,13 @@ PUT _index_template/elastic-logs-8
                 },
                 "full": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 }
               }
             },
@@ -3086,6 +3218,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "device": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -3100,6 +3233,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "registry": {
+          "type": "object",
           "properties": {
             "hive": {
               "ignore_above": 1024,
@@ -3110,6 +3244,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "data": {
+              "type": "object",
               "properties": {
                 "strings": {
                   "ignore_above": 1024,
@@ -3136,8 +3271,10 @@ PUT _index_template/elastic-logs-8
           }
         },
         "process": {
+          "type": "object",
           "properties": {
             "parent": {
+              "type": "object",
               "properties": {
                 "pgid": {
                   "type": "long"
@@ -3150,15 +3287,16 @@ PUT _index_template/elastic-logs-8
                 },
                 "working_directory": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "thread": {
+                  "type": "object",
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
@@ -3168,6 +3306,10 @@ PUT _index_template/elastic-logs-8
                       "type": "long"
                     }
                   }
+                },
+                "entity_id": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
                 },
                 "title": {
                   "ignore_above": 1024,
@@ -3179,19 +3321,15 @@ PUT _index_template/elastic-logs-8
                     }
                   }
                 },
-                "entity_id": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
-                },
                 "executable": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "ppid": {
                   "type": "long"
@@ -3204,6 +3342,7 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 },
                 "code_signature": {
+                  "type": "object",
                   "properties": {
                     "valid": {
                       "type": "boolean"
@@ -3229,28 +3368,29 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "args_count": {
                   "type": "long"
                 },
                 "command_line": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "hash": {
+                  "type": "object",
                   "properties": {
                     "sha1": {
                       "ignore_above": 1024,
@@ -3291,7 +3431,12 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
+            "program": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
             "thread": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -3302,38 +3447,34 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
-            "program": {
+            "entity_id": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "title": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
-            },
-            "entity_id": {
-              "ignore_above": 1024,
-              "type": "keyword"
+              }
             },
             "executable": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
-            },
-            "uptime": {
-              "type": "long"
+              }
             },
             "ppid": {
+              "type": "long"
+            },
+            "uptime": {
               "type": "long"
             },
             "args": {
@@ -3341,6 +3482,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "code_signature": {
+              "type": "object",
               "properties": {
                 "valid": {
                   "type": "boolean"
@@ -3362,6 +3504,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "pe": {
+              "type": "object",
               "properties": {
                 "file_version": {
                   "ignore_above": 1024,
@@ -3385,23 +3528,34 @@ PUT _index_template/elastic-logs-8
                 }
               }
             },
+            "exit_code": {
+              "type": "long"
+            },
             "name": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
-            },
-            "exit_code": {
-              "type": "long"
+              }
             },
             "args_count": {
               "type": "long"
             },
+            "command_line": {
+              "ignore_above": 1024,
+              "type": "keyword",
+              "fields": {
+                "text": {
+                  "norms": false,
+                  "type": "text"
+                }
+              }
+            },
             "hash": {
+              "type": "object",
               "properties": {
                 "sha1": {
                   "ignore_above": 1024,
@@ -3420,20 +3574,11 @@ PUT _index_template/elastic-logs-8
                   "type": "keyword"
                 }
               }
-            },
-            "command_line": {
-              "ignore_above": 1024,
-              "fields": {
-                "text": {
-                  "norms": false,
-                  "type": "text"
-                }
-              },
-              "type": "keyword"
             }
           }
         },
         "os": {
+          "type": "object",
           "properties": {
             "kernel": {
               "ignore_above": 1024,
@@ -3441,13 +3586,13 @@ PUT _index_template/elastic-logs-8
             },
             "name": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "family": {
               "ignore_above": 1024,
@@ -3474,12 +3619,14 @@ PUT _index_template/elastic-logs-8
           }
         },
         "dll": {
+          "type": "object",
           "properties": {
             "path": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "code_signature": {
+              "type": "object",
               "properties": {
                 "valid": {
                   "type": "boolean"
@@ -3501,6 +3648,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "pe": {
+              "type": "object",
               "properties": {
                 "file_version": {
                   "ignore_above": 1024,
@@ -3514,11 +3662,11 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "original_file_name": {
+                "company": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "company": {
+                "original_file_name": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 }
@@ -3529,6 +3677,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "hash": {
+              "type": "object",
               "properties": {
                 "sha1": {
                   "ignore_above": 1024,
@@ -3550,11 +3699,8 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
-        "message": {
-          "norms": false,
-          "type": "text"
-        },
         "fileset": {
+          "type": "object",
           "properties": {
             "name": {
               "ignore_above": 1024,
@@ -3562,7 +3708,12 @@ PUT _index_template/elastic-logs-8
             }
           }
         },
+        "message": {
+          "norms": false,
+          "type": "text"
+        },
         "url": {
+          "type": "object",
           "properties": {
             "extension": {
               "ignore_above": 1024,
@@ -3570,13 +3721,13 @@ PUT _index_template/elastic-logs-8
             },
             "original": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "scheme": {
               "ignore_above": 1024,
@@ -3630,6 +3781,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "igmp": {
+          "type": "object",
           "properties": {
             "type": {
               "ignore_above": 1024,
@@ -3641,6 +3793,7 @@ PUT _index_template/elastic-logs-8
           "type": "date"
         },
         "pe": {
+          "type": "object",
           "properties": {
             "file_version": {
               "ignore_above": 1024,
@@ -3654,19 +3807,21 @@ PUT _index_template/elastic-logs-8
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "original_file_name": {
+            "company": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "company": {
+            "original_file_name": {
               "ignore_above": 1024,
               "type": "keyword"
             }
           }
         },
         "service": {
+          "type": "object",
           "properties": {
             "node": {
+              "type": "object",
               "properties": {
                 "name": {
                   "ignore_above": 1024,
@@ -3678,19 +3833,19 @@ PUT _index_template/elastic-logs-8
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "state": {
-              "ignore_above": 1024,
-              "type": "keyword"
-            },
             "id": {
               "ignore_above": 1024,
               "type": "keyword"
             },
-            "type": {
+            "state": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "ephemeral_id": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "type": {
               "ignore_above": 1024,
               "type": "keyword"
             },
@@ -3701,16 +3856,17 @@ PUT _index_template/elastic-logs-8
           }
         },
         "organization": {
+          "type": "object",
           "properties": {
             "name": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "id": {
               "ignore_above": 1024,
@@ -3719,6 +3875,7 @@ PUT _index_template/elastic-logs-8
           }
         },
         "tls": {
+          "type": "object",
           "properties": {
             "cipher": {
               "ignore_above": 1024,
@@ -3728,6 +3885,7 @@ PUT _index_template/elastic-logs-8
               "type": "boolean"
             },
             "server": {
+              "type": "object",
               "properties": {
                 "not_after": {
                   "type": "date"
@@ -3747,7 +3905,12 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
+                "certificate_chain": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
                 "hash": {
+                  "type": "object",
                   "properties": {
                     "sha1": {
                       "ignore_above": 1024,
@@ -3766,10 +3929,6 @@ PUT _index_template/elastic-logs-8
                 "issuer": {
                   "ignore_above": 1024,
                   "type": "keyword"
-                },
-                "certificate_chain": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
                 }
               }
             },
@@ -3778,6 +3937,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "client": {
+              "type": "object",
               "properties": {
                 "not_after": {
                   "type": "date"
@@ -3789,11 +3949,11 @@ PUT _index_template/elastic-logs-8
                 "not_before": {
                   "type": "date"
                 },
-                "supported_ciphers": {
+                "subject": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "subject": {
+                "supported_ciphers": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
@@ -3805,15 +3965,12 @@ PUT _index_template/elastic-logs-8
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
-                "issuer": {
-                  "ignore_above": 1024,
-                  "type": "keyword"
-                },
                 "certificate_chain": {
                   "ignore_above": 1024,
                   "type": "keyword"
                 },
                 "hash": {
+                  "type": "object",
                   "properties": {
                     "sha1": {
                       "ignore_above": 1024,
@@ -3828,6 +3985,10 @@ PUT _index_template/elastic-logs-8
                       "type": "keyword"
                     }
                   }
+                },
+                "issuer": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
                 }
               }
             },
@@ -3849,12 +4010,14 @@ PUT _index_template/elastic-logs-8
           }
         },
         "threat": {
+          "type": "object",
           "properties": {
             "framework": {
               "ignore_above": 1024,
               "type": "keyword"
             },
             "technique": {
+              "type": "object",
               "properties": {
                 "reference": {
                   "ignore_above": 1024,
@@ -3862,13 +4025,13 @@ PUT _index_template/elastic-logs-8
                 },
                 "name": {
                   "ignore_above": 1024,
+                  "type": "keyword",
                   "fields": {
                     "text": {
                       "norms": false,
                       "type": "text"
                     }
-                  },
-                  "type": "keyword"
+                  }
                 },
                 "id": {
                   "ignore_above": 1024,
@@ -3877,6 +4040,7 @@ PUT _index_template/elastic-logs-8
               }
             },
             "tactic": {
+              "type": "object",
               "properties": {
                 "reference": {
                   "ignore_above": 1024,
@@ -3895,16 +4059,17 @@ PUT _index_template/elastic-logs-8
           }
         },
         "user": {
+          "type": "object",
           "properties": {
             "full_name": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "domain": {
               "ignore_above": 1024,
@@ -3912,13 +4077,13 @@ PUT _index_template/elastic-logs-8
             },
             "name": {
               "ignore_above": 1024,
+              "type": "keyword",
               "fields": {
                 "text": {
                   "norms": false,
                   "type": "text"
                 }
-              },
-              "type": "keyword"
+              }
             },
             "id": {
               "ignore_above": 1024,
@@ -3933,6 +4098,7 @@ PUT _index_template/elastic-logs-8
               "type": "keyword"
             },
             "group": {
+              "type": "object",
               "properties": {
                 "domain": {
                   "ignore_above": 1024,
@@ -3950,8 +4116,7 @@ PUT _index_template/elastic-logs-8
             }
           }
         }
-      },
-      "date_detection": false
+      }
     },
     "aliases": {
       "filebeat-elastic-logs-8": {}
@@ -3963,5 +4128,8 @@ PUT _index_template/elastic-logs-8
   "data_stream": {
     "hidden": false,
     "allow_custom_routing": false
-  }
+  },
+  "composed_of": [
+    "elastic-logs-8-uam_mapping"
+  ]
 }

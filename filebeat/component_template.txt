@@ -1,0 +1,82 @@
+PUT _component_template/elastic-logs-8-uam_mapping
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "elasticsearch": {
+          "properties": {
+            "uam": {
+              "properties": {
+                "saved_object": {
+                  "properties": {
+                    "id": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "search": {
+                  "properties": {
+                    "date_range": {
+                      "properties": {
+                        "duration": {
+                          "type": "long"
+                        },
+                        "from": {
+                          "ignore_above": 1024,
+                          "type": "keyword"
+                        },
+                        "to": {
+                          "ignore_above": 1024,
+                          "type": "keyword"
+                        }
+                      }
+                    },
+                    "duration": {
+                      "type": "long"
+                    },
+                    "hits": {
+                      "type": "float"
+                    },
+                    "query": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    },
+                    "index": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    },
+                    "id": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    },
+                    "aggregations": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "application": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "opaque_id": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "origination": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "error": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

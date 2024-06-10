@@ -8,5 +8,4 @@
     enabled: true
     var.paths:
       - /path-to-elastic/logs/elasticsearch_index_search_slowlog.json
-      - /path-to-elastic/logs/elasticsearch_index_indexing_slowlog.json
 
